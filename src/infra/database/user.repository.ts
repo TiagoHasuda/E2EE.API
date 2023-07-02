@@ -32,6 +32,14 @@ export class UserRepository implements IUserRepository {
     })
   }
 
+  findById(id: string): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: {
+        id,
+      },
+    })
+  }
+
   async insert(newUser: InsertUserDto): Promise<User> {
     await this.userRepository.insert(newUser);
     return this.userRepository.findOne({

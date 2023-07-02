@@ -1,4 +1,4 @@
-import { ConflictException, Inject, Injectable } from "@nestjs/common";
+import { ConflictException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { IUserService } from "src/domain/services/user.service";
 import { UserRepository } from "../database/user.repository";
 import { IUserRepository } from "src/domain/database/user.repository";
@@ -15,7 +15,7 @@ export class UserService implements IUserService {
   constructor(
     @Inject(UserRepository)
     private readonly userRepository: IUserRepository,
-  ) {}
+  ) { }
 
   async findByEmail(email: string): Promise<FindByEmailUserPresenter> {
     const users = await this.userRepository.findByEmail(email)
@@ -23,20 +23,25 @@ export class UserService implements IUserService {
   }
 
   async insert(user: InsertUserDto): Promise<InsertUserPresenter> {
-    try {
-      const newUser = await this.userRepository.insert(user)
-      return new InsertUserPresenter(newUser)
-    } catch {
+    const existingUser = await this.userRepository.findOneEmail(user.email)
+    if (existingUser)
       throw new ConflictException("Email already in use")
-    }
+    const newUser = await this.userRepository.insert(user)
+    return new InsertUserPresenter(newUser)
   }
 
   async updatePublicKey(data: UpdatePublicKeyUserDto): Promise<UpdatePublicKeyUserPresenter> {
+    const existingUser = await this.userRepository.findById(data.userId)
+    if (!existingUser)
+      throw new NotFoundException("User not found")
     const user = await this.userRepository.updatePublicKey(data)
     return new UpdatePublicKeyUserPresenter(user)
   }
 
   async updateName(data: UpdateNameUserDto): Promise<UpdateNameUserPresenter> {
+    const existingUser = await this.userRepository.findById(data.userId)
+    if (!existingUser)
+      throw new NotFoundException("User not found")
     const user = await this.userRepository.updateName(data)
     return new UpdateNameUserPresenter(user)
   }

@@ -6,6 +6,7 @@ import { UpdateNameUserDto } from "src/app/dtos/user/update.name.dto";
 export interface IUserRepository {
   findByEmail(email: string): Promise<User[]>
   findOneEmail(email: string): Promise<User | null>
+  findById(id: string): Promise<User | null>
   insert(newUser: InsertUserDto): Promise<User>
   updatePublicKey(data: UpdatePublicKeyUserDto): Promise<User>
   updateName(data: UpdateNameUserDto): Promise<User>
