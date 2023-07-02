@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: e2ee.api
+    build: .
+    ports:
+      - "80"
+    restart: unless-stopped
+    links:
+      - e2ee.db
+    depends_on:
+      - e2ee.db
+    env_file:
+      - .env
+    networks:
+      - traefik
+      - e2ee.network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.e2eeapi.rule=Host(`e2ee.api.jameswebserver.com`)
+    
+networks:
+  traefik:
+    external:
+      name: traefik
+  e2ee.network:
+    external:
+      name: e2ee.network

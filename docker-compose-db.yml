@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: e2ee.db
+    restart: always
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+      - MYSQL_DATABASE=${DB_DATABASE}
+    networks:
+      - e2ee.network
+    ports:
+      - "3306"
+    volumes:
+      - e2ee.db.volume:/jws/db/e2ee
+    labels:
+      - traefik.enable=false
+
+volumes:
+  e2ee.db.volume:
+    name: e2ee.db.volume
+
+networks:
+  e2ee.network:
+    name: e2ee.network
