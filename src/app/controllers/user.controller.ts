@@ -8,6 +8,7 @@ import { FindByEmailUserPresenter } from "../presenters/user/find.by.email.prese
 import { UpdatePublicKeyUserPresenter } from "../presenters/user/update.public.key.presenter";
 import { UpdateNameUserDto } from "../dtos/user/update.name.dto";
 import { UpdateNameUserPresenter } from "../presenters/user/update.name.presenter";
+import { FindOneEmailUserPresenter } from "../presenters/user/find.one.email.presenter";
 
 @Controller('user')
 export class UserController {
@@ -21,6 +22,13 @@ export class UserController {
     @Query('email') email: string,
   ): Promise<FindByEmailUserPresenter> {
     return this.userService.findByEmail(email)
+  }
+
+  @Get('one')
+  findOneEmail(
+    @Query('email') email: string,
+  ): Promise<FindOneEmailUserPresenter> {
+    return this.userService.findOneEmail(email)
   }
 
   @Post()

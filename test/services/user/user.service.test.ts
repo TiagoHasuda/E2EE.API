@@ -1,4 +1,5 @@
 import { FindByEmailUserPresenter } from "src/app/presenters/user/find.by.email.presenter";
+import { FindOneEmailUserPresenter } from "src/app/presenters/user/find.one.email.presenter";
 import { InsertUserPresenter } from "src/app/presenters/user/insert.presenter";
 import { UpdateNameUserPresenter } from "src/app/presenters/user/update.name.presenter";
 import { UpdatePublicKeyUserPresenter } from "src/app/presenters/user/update.public.key.presenter";
@@ -50,10 +51,24 @@ describe('UserService', () => {
         return expect(promise).rejects.toThrowError('Email already in use');
     });
 
-    test('should return the users formatted by presenter on findByEmail', () => {
+    it('should return the users formatted by presenter on findByEmail', () => {
         const user = UserEntityMock.createUser({ email: 'testEmail@email.com' });
         const promise = sut.findByEmail(user.email);
         const expectedResult = new FindByEmailUserPresenter([user]);
+        return expect(promise).resolves.toMatchObject(expectedResult);
+    });
+
+    it('should throw an error if user doesn\'t exist on findOneEmail', () => {
+        const user = UserEntityMock.createUser();
+        findOneEmailMock.mockResolvedValueOnce(null);
+        const promise = sut.findOneEmail(user.email);
+        return expect(promise).rejects.toThrowError('User not found');
+    });
+
+    it('should return formatted user by presenter on findOneEmail', () => {
+        const user = UserEntityMock.createUser();
+        const promise = sut.findOneEmail(user.email);
+        const expectedResult = new FindOneEmailUserPresenter(user);
         return expect(promise).resolves.toMatchObject(expectedResult);
     });
 

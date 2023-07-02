@@ -6,9 +6,11 @@ import { FindByEmailUserPresenter } from "src/app/presenters/user/find.by.email.
 import { UpdatePublicKeyUserPresenter } from "src/app/presenters/user/update.public.key.presenter";
 import { UpdateNameUserDto } from "src/app/dtos/user/update.name.dto";
 import { UpdateNameUserPresenter } from "src/app/presenters/user/update.name.presenter";
+import { FindOneEmailUserPresenter } from "src/app/presenters/user/find.one.email.presenter";
 
 export interface IUserService {
   findByEmail(email: string): Promise<FindByEmailUserPresenter>
+  findOneEmail(email: string): Promise<FindOneEmailUserPresenter>
   insert(user: InsertUserDto): Promise<InsertUserPresenter>
   updatePublicKey(data: UpdatePublicKeyUserDto): Promise<UpdatePublicKeyUserPresenter>
   updateName(data: UpdateNameUserDto): Promise<UpdateNameUserPresenter>

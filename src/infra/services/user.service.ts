@@ -9,6 +9,7 @@ import { FindByEmailUserPresenter } from "src/app/presenters/user/find.by.email.
 import { UpdatePublicKeyUserPresenter } from "src/app/presenters/user/update.public.key.presenter";
 import { UpdateNameUserDto } from "src/app/dtos/user/update.name.dto";
 import { UpdateNameUserPresenter } from "src/app/presenters/user/update.name.presenter";
+import { FindOneEmailUserPresenter } from "src/app/presenters/user/find.one.email.presenter";
 
 @Injectable()
 export class UserService implements IUserService {
@@ -20,6 +21,13 @@ export class UserService implements IUserService {
   async findByEmail(email: string): Promise<FindByEmailUserPresenter> {
     const users = await this.userRepository.findByEmail(email)
     return new FindByEmailUserPresenter(users)
+  }
+
+  async findOneEmail(email: string): Promise<FindOneEmailUserPresenter> {
+    const user = await this.userRepository.findOneEmail(email);
+    if (!user)
+      throw new NotFoundException('User not found')
+    return new FindOneEmailUserPresenter(user);
   }
 
   async insert(user: InsertUserDto): Promise<InsertUserPresenter> {
