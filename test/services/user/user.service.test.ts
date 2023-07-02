@@ -32,7 +32,7 @@ describe('UserService', () => {
 
     beforeEach(init);
 
-    test('it should return the new user formatted by presenter on insert', () => {
+    it('should return the new user formatted by presenter on insert', () => {
         const newUser = UserEntityMock.createUser();
         findOneEmailMock.mockResolvedValueOnce(null);
         const promise = sut.insert(newUser);
@@ -41,7 +41,7 @@ describe('UserService', () => {
         return expect(promise).resolves.toMatchObject(expectedResult);
     });
 
-    test('it should throw an error if the email is already in use on insert', () => {
+    it('should throw an error if the email is already in use on insert', () => {
         const emailInUse = 'emailinuse@email.com';
         const newUser = UserEntityMock.createUser({ email: emailInUse });
         findOneEmailMock.mockResolvedValueOnce(newUser);
@@ -50,21 +50,21 @@ describe('UserService', () => {
         return expect(promise).rejects.toThrowError('Email already in use');
     });
 
-    test('it should return the users formatted by presenter on findByEmail', () => {
+    test('should return the users formatted by presenter on findByEmail', () => {
         const user = UserEntityMock.createUser({ email: 'testEmail@email.com' });
         const promise = sut.findByEmail(user.email);
         const expectedResult = new FindByEmailUserPresenter([user]);
         return expect(promise).resolves.toMatchObject(expectedResult);
     });
 
-    test('it should throw error if user doesn\'t exist on updatePublicKey', () => {
+    it('should throw error if user doesn\'t exist on updatePublicKey', () => {
         const user = UserEntityMock.createUser();
         findByIdMock.mockResolvedValueOnce(null);
         const promise = sut.updatePublicKey({ userId: user.id, publicKey: 'newPublicKey' });
         return expect(promise).rejects.toThrowError('User not found');
     });
 
-    test('it should return formatted user with new public key by presenter on updatePublicKey', () => {
+    it('should return formatted user with new public key by presenter on updatePublicKey', () => {
         const newPublicKey = 'newPublicKey';
         const user = UserEntityMock.createUser();
         const promise = sut.updatePublicKey({ userId: user.id, publicKey: newPublicKey });
@@ -73,14 +73,14 @@ describe('UserService', () => {
         return expect(promise).resolves.toMatchObject(expectedResult);
     });
 
-    test('it should throw error if user doesn\'t exist on updateName', () => {
+    it('should throw error if user doesn\'t exist on updateName', () => {
         const user = UserEntityMock.createUser();
         findByIdMock.mockResolvedValueOnce(null);
         const promise = sut.updateName({ userId: user.id, name: 'newName' });
         return expect(promise).rejects.toThrowError('User not found');
     });
 
-    test('it should return formatted user with new name by presenter on updateName', () => {
+    it('should return formatted user with new name by presenter on updateName', () => {
         const newName = 'newName';
         const user = UserEntityMock.createUser();
         const promise = sut.updateName({ userId: user.id, name: newName });
