@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { User } from 'src/domain/entities/user.entity';
 import { ResetToken } from 'src/domain/entities/reset.token.entity';
 import { UserModule } from './user.module';
+import { ResetTokenModule } from './reset.token.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from './user.module';
       synchronize: true,
     }),
     UserModule,
+    ResetTokenModule,
   ],
   controllers: [],
   providers: [],

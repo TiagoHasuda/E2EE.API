@@ -4,7 +4,6 @@ import { UpdatePublicKeyUserDto } from "src/app/dtos/user/update.public.key.dto"
 import { IUserRepository } from "src/domain/database/user.repository";
 import { User } from "src/domain/entities/user.entity";
 import { UserEntityMock } from "../entities/user.entity.mock";
-import { resolve } from "path";
 
 export class UserRepositoryMock implements IUserRepository {
     findByEmail(email: string): Promise<User[]> {

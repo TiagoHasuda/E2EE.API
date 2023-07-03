@@ -15,6 +15,7 @@ const config: Config = {
     collectCoverageFrom: [
         "**/src/**/*.(t|j)s",
         "**/test/**",
+        "!**/dist/**",
         "!**/app/**",
         "!**/domain/**",
         "!**/*.module.ts",
