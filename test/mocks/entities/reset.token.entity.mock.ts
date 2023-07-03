@@ -4,7 +4,7 @@ import { UserEntityMock } from "./user.entity.mock";
 
 export class ResetTokenEntityMock {
     static createResetToken(params?: Partial<ResetToken>): ResetToken {
-        const user = UserEntityMock.createUser(params.user);
+        const user = UserEntityMock.createUser(params?.user);
         return {
             token: NewToken(),
             userId: user.id,

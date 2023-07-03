@@ -5,6 +5,9 @@ import { ResetTokenRepositoryMock } from "test/mocks/repositories/reset.token.re
 import { UserRepositoryMock } from "test/mocks/repositories/user.repository.mock";
 import { MailerServiceMock } from "test/mocks/services/mailer.service.mock";
 import { mailerOptions } from "../mail.service.test";
+import { ResetTokenEntityMock } from "test/mocks/entities/reset.token.entity.mock";
+import { InsertUserPresenter } from "src/app/presenters/user/insert.presenter";
+import { BadRequestException, InternalServerErrorException, NotFoundException, UnauthorizedException } from "@nestjs/common";
 
 describe('ResetTokenService', () => {
     let userRepository: UserRepositoryMock;
@@ -15,11 +18,17 @@ describe('ResetTokenService', () => {
 
     const {
         findOneEmailMock,
+        updatePublicKeyMock,
     } = UserRepositoryMock.getMocks();
 
     const {
         sendMailMock,
     } = MailerServiceMock.getMocks();
+
+    const {
+        getByUserMock,
+        removeMock,
+    } = ResetTokenRepositoryMock.getMocks();
 
     function initDependencies() {
         userRepository = new UserRepositoryMock();
@@ -43,13 +52,50 @@ describe('ResetTokenService', () => {
         const user = UserEntityMock.createUser();
         findOneEmailMock.mockResolvedValueOnce(null);
         const promise = sut.sendResetToken(user.email);
-        return expect(promise).rejects.toThrowError('User not found');
+        return expect(promise).rejects.toThrowError(NotFoundException);
     });
 
     it('should throw error if mail service throws an error on sendResetToken', () => {
         const user = UserEntityMock.createUser();
         sendMailMock.mockRejectedValueOnce(null);
         const promise = sut.sendResetToken(user.email);
-        return expect(promise).rejects.toThrowError('Couldn\'t send email');
+        return expect(promise).rejects.toThrowError(InternalServerErrorException);
+    });
+
+    it('should throw error if user doesn\'t exist on validateResetToken', () => {
+        const user = UserEntityMock.createUser();
+        findOneEmailMock.mockResolvedValueOnce(null);
+        const promise = sut.validateResetToken(user.email, '123456', user.publicKey);
+        return expect(promise).rejects.toThrowError(NotFoundException);
+    });
+
+    it('should throw error if there is no token to verify on validateResetToken', () => {
+        const user = UserEntityMock.createUser();
+        getByUserMock.mockResolvedValueOnce(null);
+        const promise = sut.validateResetToken(user.email, '123456', user.publicKey);
+        return expect(promise).rejects.toThrowError(BadRequestException);
+    });
+
+    it('should throw error if the token is invalid on validateResetToken', () => {
+        const resetToken = ResetTokenEntityMock.createResetToken();
+        const promise = sut.validateResetToken(resetToken.user.email, 'abcdef', resetToken.user.publicKey);
+        return expect(promise).rejects.toThrowError(UnauthorizedException);
+    });
+
+    it('should throw error if token is not removed from db on validateResetToken', () => {
+        const resetToken = ResetTokenEntityMock.createResetToken();
+        getByUserMock.mockResolvedValueOnce(resetToken);
+        removeMock.mockResolvedValueOnce(false);
+        const promise = sut.validateResetToken(resetToken.user.email, resetToken.token, resetToken.user.publicKey);
+        return expect(promise).rejects.toThrowError(BadRequestException);
+    });
+
+    it('should return formatted user by presenter on validateResetToken', () => {
+        const resetToken = ResetTokenEntityMock.createResetToken();
+        getByUserMock.mockResolvedValueOnce(resetToken);
+        updatePublicKeyMock.mockResolvedValueOnce(resetToken.user);
+        const promise = sut.validateResetToken(resetToken.user.email, resetToken.token, resetToken.user.publicKey);
+        const expectedResult = new InsertUserPresenter(resetToken.user);
+        return expect(promise).resolves.toMatchObject(expectedResult);
     });
 })

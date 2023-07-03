@@ -1,3 +1,4 @@
+import { ConflictException, NotFoundException } from "@nestjs/common";
 import { FindByEmailUserPresenter } from "src/app/presenters/user/find.by.email.presenter";
 import { FindOneEmailUserPresenter } from "src/app/presenters/user/find.one.email.presenter";
 import { InsertUserPresenter } from "src/app/presenters/user/insert.presenter";
@@ -48,7 +49,7 @@ describe('UserService', () => {
         findOneEmailMock.mockResolvedValueOnce(newUser);
         const payload = UserEntityMock.createUser({ email: emailInUse });
         const promise = sut.insert(payload);
-        return expect(promise).rejects.toThrowError('Email already in use');
+        return expect(promise).rejects.toThrowError(ConflictException);
     });
 
     it('should return the users formatted by presenter on findByEmail', () => {
@@ -62,7 +63,7 @@ describe('UserService', () => {
         const user = UserEntityMock.createUser();
         findOneEmailMock.mockResolvedValueOnce(null);
         const promise = sut.findOneEmail(user.email);
-        return expect(promise).rejects.toThrowError('User not found');
+        return expect(promise).rejects.toThrowError(NotFoundException);
     });
 
     it('should return formatted user by presenter on findOneEmail', () => {
@@ -76,7 +77,7 @@ describe('UserService', () => {
         const user = UserEntityMock.createUser();
         findByIdMock.mockResolvedValueOnce(null);
         const promise = sut.updatePublicKey({ userId: user.id, publicKey: 'newPublicKey' });
-        return expect(promise).rejects.toThrowError('User not found');
+        return expect(promise).rejects.toThrowError(NotFoundException);
     });
 
     it('should return formatted user with new public key by presenter on updatePublicKey', () => {
@@ -92,7 +93,7 @@ describe('UserService', () => {
         const user = UserEntityMock.createUser();
         findByIdMock.mockResolvedValueOnce(null);
         const promise = sut.updateName({ userId: user.id, name: 'newName' });
-        return expect(promise).rejects.toThrowError('User not found');
+        return expect(promise).rejects.toThrowError(NotFoundException);
     });
 
     it('should return formatted user with new name by presenter on updateName', () => {
