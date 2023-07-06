@@ -22,11 +22,18 @@ export class User {
   email: string;
 
   @Column({
-    nullable: true,
+    nullable: false,
     type: 'char',
     length: 255,
   })
   publicKey: string;
+
+  @Column({
+    nullable: false,
+    type: 'varchar',
+    length: 255,
+  })
+  registrationToken: string;
 
   @OneToMany(_ => ResetToken, resetToken => resetToken.user)
   tokens: ResetToken[]
