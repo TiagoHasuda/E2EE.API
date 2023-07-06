@@ -21,7 +21,7 @@ export class MailService implements IMailSerivce {
             });
             return true;
         } catch (err) {
-            console.error(err);
+            console.error('Reset token email not sent', err);
             return false;
         }
     }

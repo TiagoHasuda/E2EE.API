@@ -28,13 +28,6 @@ export class User {
   })
   publicKey: string;
 
-  @Column({
-    nullable: false,
-    type: 'varchar',
-    length: 255,
-  })
-  registrationToken: string;
-
   @OneToMany(_ => ResetToken, resetToken => resetToken.user)
   tokens: ResetToken[]
 }

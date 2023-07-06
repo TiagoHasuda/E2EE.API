@@ -19,7 +19,7 @@ export class FirebaseAdmin extends IFirebaseAdmin {
     async sendPush(to: string, from: string, message: string): Promise<void> {
         try {
             await this.app.messaging().send({
-                token: to,
+                topic: to,
                 data: {
                     title: from,
                     body: message,

@@ -8,7 +8,6 @@ export class UserEntityMock {
             email: 'test@test.com',
             name: 'Test User',
             publicKey: 'testKey',
-            registrationToken: 'rt',
             tokens: [],
             ...params,
         }

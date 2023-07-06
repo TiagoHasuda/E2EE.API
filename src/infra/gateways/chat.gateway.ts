@@ -44,7 +44,7 @@ export class ChatGateway implements IChatGateway {
         const user = this.ug.get({ gatewayId: client.id });
         const userFrom = await this.userRepository.findById(user.userId);
         if (!userTo || !userFrom) return false;
-        await this.fa.sendPush(userTo.registrationToken, userFrom.name, message.message);
+        await this.fa.sendPush(userTo.id, userFrom.name, message.message);
         return true;
     };
 }
